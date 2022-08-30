@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 
 project(modelGenerator)
 
-set(CPPS ModelGenerator.cpp)
+set(CPPS ModelGenerator.cpp ModelDescriptor.cpp)
 
 add_library(modelGenerator STATIC ${CPPS})
 

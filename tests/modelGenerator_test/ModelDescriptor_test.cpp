@@ -2,6 +2,9 @@
 #include "../../ModelGenerator/ModelDescriptor.h"
 #include "../../StreamOutput/StreamOutput.h"
 
+/**
+ * @brief Test of the class ModelDescriptor::MaterialPropDesc ctor
+ */
 int main(int argc, char** argv) {
     
     ModelDescriptor::MaterialPropDesc desc{2E11, 0.3};

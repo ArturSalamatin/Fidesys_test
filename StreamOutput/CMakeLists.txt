@@ -5,5 +5,6 @@ project(StreamOutput)
 set(CPPS StreamOutput.cpp)
 
 add_library(StreamOutput STATIC ${CPPS})
+target_link_libraries(StreamOutput modelGenerator)
 
 target_compile_features(StreamOutput PRIVATE cxx_std_17)
