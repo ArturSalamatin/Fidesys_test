@@ -38,34 +38,27 @@ namespace ModelGenerator
         class KfileParser
         {
         public:
-            KfileParser(std::string fName)
-            {
-                std::ifstream f{fName};
-                if (f.is_open())
-                {
-                    throw std::runtime_error("Could not open file " + fName);
-                }
-            }
+            KfileParser() = default;
+            KfileParser(const std::string &fName);
+
+        public:
+            /**
+             * @brief Parse a single line of node record
+             *
+             * @param s Input string containing a node record
+             * @return ModelDescriptor::Node Struct containing node descriptor (id + coords)
+             */
+            static ModelDescriptor::Node parse_node(const std::string &s);
+
+            /**
+             * @brief Parse a NODE section of k-file
+             *
+             * @return ModelDescriptor::Points Container with mesh points
+             */
+            ModelDescriptor::Points parse_section_node();
 
         protected:
-            ModelDescriptor::Node parse_node(const std::string &s)
-            {
-                ModelDescriptor::Point2D p;
-
-                std::stringstream str{s};
-                unsigned int id;
-                double x, y;
-
-                str >> id;
-                str >> x >> y;
-
-                return ModelDescriptor::Node{id, ModelDescriptor::Point2D{x, y}};
-            }
-
-            void parse_section_node(std::istream &is)
-            {
-                
-            }
+            std::ifstream stream; /*< Stream connected to a file with mesh description*/
         };
 
     } // FileParser

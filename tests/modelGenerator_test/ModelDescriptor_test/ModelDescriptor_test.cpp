@@ -1,6 +1,6 @@
 #include <iostream>
-#include "../../ModelGenerator/ModelDescriptor.h"
-#include "../../StreamOutput/StreamOutput.h"
+#include "../../../ModelGenerator/ModelDescriptor.h"
+#include "../../../StreamOutput/StreamOutput.h"
 
 /**
  * @brief Test of the class ModelDescriptor::MaterialPropDesc ctor

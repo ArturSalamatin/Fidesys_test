@@ -6,7 +6,7 @@
 #include <unordered_map>
 
 #include "../eigen/Eigen/Dense"
-
+ 
 namespace ModelDescriptor
 {
     /**
@@ -33,7 +33,7 @@ namespace ModelDescriptor
         Point2D p;
     }; /**< This struct binds the point (x;y) to its id in the mesh */
 
-    using Points = std::unordered_map<unsigned int, Point2D>; /**< Container for points in 2D space accessed by its id in the mesh */
+    using Points = std::unordered_map<unsigned int, Point2D>; /**< Container for points in 2D space accessed by its id in the mesh. The ids are not nesecceraly indexed as 0,1,2,.. */
 
     struct GridDesc
     {
