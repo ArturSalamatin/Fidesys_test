@@ -9,10 +9,6 @@
 int main(int argc, char **argv)
 {
 
-std::ofstream f{"musor.txt"};
-f.close();
-
-
     ModelGenerator::FileParser::KfileParser parser;
     try
     {

@@ -6,29 +6,17 @@
 #include <string>
 #include <sstream>
 #include <exception>
-#include <algorithm>
 
 #include "ModelDescriptor.h"
 
 namespace ModelGenerator
 {
     /**
-     * @brief Factory generating a model from file
+     * @brief Factory method generating a model from file
      *
      */
-    class ModelFactory_FromFile
-    {
-    protected:
-        std::string fileName; /**< File name for the test file with the model descriptor */
-
-    public:
-        /**
-         * @brief Construct a new ModelFactory_FromFile object
-         *
-         * @param fileName File name for the test file with the model descriptor
-         */
-        ModelFactory_FromFile(std::string fileName) noexcept;
-    };
+    ModelDescriptor::GridDesc
+    ModelDescriptorFromFile(const std::string &fileName);
 
     namespace FileParser
     {
@@ -41,6 +29,9 @@ namespace ModelGenerator
         public:
             KfileParser() = default;
             KfileParser(const std::string &fName);
+
+            ModelDescriptor::Elements e;
+            ModelDescriptor::Points p;
 
         public:
             /**

@@ -2,10 +2,12 @@
 
 namespace ModelGenerator
 {
-
-    ModelFactory_FromFile::ModelFactory_FromFile(std::string fileName) noexcept : fileName{fileName}
+    ModelDescriptor::GridDesc
+    ModelDescriptorFromFile(const std::string &fileName)
     {
         FileParser::KfileParser parser{fileName};
+
+        return {std::move(parser.p), std::move(parser.e)};
     }
 
     namespace FileParser
@@ -16,6 +18,39 @@ namespace ModelGenerator
             if (!stream.is_open())
             {
                 throw std::runtime_error("Could not open file " + fName);
+            }
+
+            /**
+             * @brief Loop through file lines to find various sections
+             *
+             */
+            while (!stream.eof())
+            {
+                std::string str;
+                std::getline(stream, str);
+
+                if (str[0] == '*') /*< a section is found*/
+                {
+                    std::stringstream ss{std::move(str)};
+                    if (str == "*NODE")
+                    {
+                        p = parse_section_node();
+                        if (p.size() < 3)
+                        {
+                            throw std::runtime_error("The amount of nodes is insufficient to construct a finite element.");
+                        }
+                        continue;
+                    }
+                    if (str == "*ELEMENT_SHELL")
+                    {
+                        e = parse_section_element();
+                        if (e.size() < 1)
+                        {
+                            throw std::runtime_error("There is no any finite element in the file.");
+                        }
+                        continue;
+                    }
+                }
             }
         }
 
@@ -45,9 +80,8 @@ namespace ModelGenerator
             unsigned int temp; /**< This column is irrelevant*/
 
             str >> id >> temp >> v(0) >> v(1) >> v(2);
-            std::sort(v.begin(), v.end());
 
-            return ModelDescriptor::Element{id, v}; /**< point IDs are returned in a sorted order*/
+            return ModelDescriptor::Element{id, std::move(v)}; /**< point IDs are returned in a sorted order*/
         }
 
         ModelDescriptor::Points
@@ -86,5 +120,4 @@ namespace ModelGenerator
         }
 
     } // FileParser
-
 } // ModelGenerator

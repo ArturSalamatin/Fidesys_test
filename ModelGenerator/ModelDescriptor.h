@@ -4,6 +4,7 @@
 // #include <vector>
 #include <map>
 #include <unordered_map>
+#include <algorithm>
 
 #include "../eigen/Eigen/Dense"
 
@@ -34,8 +35,18 @@ namespace ModelDescriptor
     }; /**< This struct binds the point (x;y) to its id in the mesh */
 
     using Element2D = Eigen::Matrix<unsigned int, 3, 1>; /**< (x;y) coordinates of points in 2D space, in meters */
-    using Element = struct
+    
+    /**
+     * @brief Struct describing a finite element with ID. The nodes f the element are stored in a sorted order.
+     * 
+     */
+    struct Element
     {
+        Element(unsigned int id, Element2D&& e) : id{id}, e{e}
+        {
+            std::sort(this->e.begin(), this->e.end());
+        }
+
         unsigned int id; /**< ID of the FEM element*/
         Element2D e;     /**< IDs of nodes that form the element*/
     };
@@ -49,15 +60,15 @@ namespace ModelDescriptor
         Points points;
         Elements elements;
 
-        void push(const Node &node)
-        {
-            points.insert({node.id, node.p});
-        }
+        // void push(const Node &node)
+        // {
+        //     points.insert({node.id, node.p});
+        // }
 
-        void push(const Element &elem)
-        {
-            elements.insert({elem.id, elem.e});
-        }
+        // void push(const Element &elem)
+        // {
+        //     elements.insert({elem.id, elem.e});
+        // }
     };
 } // ModelDescriptor
 #endif
