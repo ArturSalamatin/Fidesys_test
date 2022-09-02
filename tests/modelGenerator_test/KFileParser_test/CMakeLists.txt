@@ -27,3 +27,17 @@ add_test(kFileParserTest2_t kFileParserTest2)
 set_tests_properties(kFileParserTest2_t PROPERTIES
 PASS_REGULAR_EXPRESSION "Pass"
 FAIL_REGULAR_EXPRESSION "Fail")
+
+
+project(KFileParserTest3)
+
+add_executable(kFileParserTest3 KFileParser_test3.cpp)
+target_link_libraries(kFileParserTest3 modelGenerator StreamOutput)
+
+target_compile_features(kFileParserTest3 PRIVATE cxx_std_17)
+
+add_test(kFileParserTest3_t kFileParserTest3)
+
+set_tests_properties(kFileParserTest3_t PROPERTIES
+PASS_REGULAR_EXPRESSION "Pass"
+FAIL_REGULAR_EXPRESSION "Fail")

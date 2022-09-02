@@ -1,18 +1,22 @@
 #include <iostream>
 #include <string>
-// #include "../../../ModelGenerator/ModelDescriptor.h"
 #include "../../../ModelGenerator/ModelGenerator.h"
 #include "../../../StreamOutput/StreamOutput.h"
 
 /**
- * @brief Test of the class ModelDescriptor::MaterialPropDesc ctor
+ * @brief Test of the method ModelGenerator::FileParser::KfileParser::parse_section_element()
  */
 int main(int argc, char **argv)
 {
+
+std::ofstream f{"musor.txt"};
+f.close();
+
+
     ModelGenerator::FileParser::KfileParser parser;
     try
     {
-        parser = ModelGenerator::FileParser::KfileParser("node_section.k");
+        parser = ModelGenerator::FileParser::KfileParser("element_section.k");
     }
     catch (std::runtime_error &e)
     {
@@ -24,23 +28,23 @@ int main(int argc, char **argv)
 
     // the file is opened
 
-    auto points = parser.parse_section_node();
+    auto elements = parser.parse_section_element();
 
     using namespace ModelDescriptor;
 
-    if (points.size() != 28)
+    if (elements.size() != 38)
     {
         std::cout << "Fail ";
         std::cout << "\nReturn " << '\n'
-                  << points;
+                  << elements;
         return -1;
     }
 
-    if (points[28](0) != 0.0604836 || points[28](1) != 0.0676566 || points[4](0) != 0.0 || points[4](1) != 0.25)
+    if (elements[10](0) != 12 || elements[10](1) != 20 || elements[10](2) != 21)
     {
         std::cout << "Fail ";
         std::cout << "\nReturn " << '\n'
-                  << points;
+                  << elements;
         return -1;
     }
 

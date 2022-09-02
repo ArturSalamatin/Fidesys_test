@@ -12,7 +12,7 @@ namespace ModelDescriptor
     } 
 
     
-    std::ostream& operator<<(std::ostream& o, const Eigen::Vector2d& v)
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Point2D& v)
     {
         o << std::left << std::setw(3) <<  "x:" << std::right << std::scientific << std::setprecision(6) << v(0);
         o << ";\t";
@@ -20,8 +20,6 @@ namespace ModelDescriptor
         o << std::endl;
         return o;
     }
-
-    
     std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Node& node)
     {
         o << "<<<ModelDescriptor::Node>>>\n";
@@ -31,8 +29,6 @@ namespace ModelDescriptor
 
         return o;
     }
-
-    
     std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Points& p)
     {
         o << "<<<ModelDescriptor::Points>>>\n";
@@ -45,4 +41,38 @@ namespace ModelDescriptor
         return o;
     }
 
+
+
+
+
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Element2D& v)
+    {
+        o << std::left << std::setw(9) <<  "node_1:" << std::right << std::fixed << v(0);
+        o << ";\t";
+        o << std::left << std::setw(9) <<  "nnode_2:" << std::right << std::fixed << v(1);
+        o << ";\t";
+        o << std::left << std::setw(9) <<  "nnode_3:" << std::right << std::fixed << v(2);
+        o << std::endl;
+        return o;
+    }
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Element& e)
+    {
+        o << "<<<ModelDescriptor::Element>>>\n";
+        o << std::left << std::setw(4) <<  "id:" << std::right << e.id;
+        o << '\n';
+        o << e.e;
+
+        return o;
+    }
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Elements& e)
+    {
+        o << "<<<ModelDescriptor::Elements>>>\n";
+        o << std::left << std::setw(17) <<  "container size:" << std::right << e.size();
+        o << '\n';
+
+        for(const auto& el : e)
+            o << ModelDescriptor::Element{el.first, el.second};
+
+        return o;
+    }
 }

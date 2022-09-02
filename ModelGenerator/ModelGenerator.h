@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <exception>
+#include <algorithm>
 
 #include "ModelDescriptor.h"
 
@@ -51,11 +52,26 @@ namespace ModelGenerator
             static ModelDescriptor::Node parse_node(const std::string &s);
 
             /**
+             * @brief Parse a 2D element from the string
+             *
+             * @param s String with the element id and node ids
+             * @return ModelDescriptor::Element
+             */
+            static ModelDescriptor::Element parse_element(const std::string &s);
+
+            /**
              * @brief Parse a NODE section of k-file
              *
              * @return ModelDescriptor::Points Container with mesh points
              */
             ModelDescriptor::Points parse_section_node();
+
+            /**
+             * @brief Parse a ELEMENT_SHELL section of k-file
+             *
+             * @return ModelDescriptor::Elements Container with elements of the model
+             */
+            ModelDescriptor::Elements parse_section_element();
 
         protected:
             std::ifstream stream; /*< Stream connected to a file with mesh description*/
