@@ -3,11 +3,18 @@
 namespace ModelGenerator
 {
     ModelDescriptor::GridDesc
-    ModelDescriptorFromFile(const std::string &fileName)
+    MeshDescriptorFromFile(const std::string &fileName)
     {
         FileParser::KfileParser parser{fileName};
+        parser.parse();
 
         return {std::move(parser.p), std::move(parser.e)};
+    }
+
+    ModelDescriptor::MaterialPropDesc
+    MaterialPropDescDefault()
+    {
+        return ModelDescriptor::MaterialPropDesc{2E11, 0.3};
     }
 
     namespace FileParser
@@ -19,7 +26,14 @@ namespace ModelGenerator
             {
                 throw std::runtime_error("Could not open file " + fName);
             }
+        }
+        KfileParser::~KfileParser()
+        {
+            stream.close();
+        }
 
+        void KfileParser::parse()
+        {
             /**
              * @brief Loop through file lines to find various sections
              *
@@ -37,7 +51,7 @@ namespace ModelGenerator
                         p = parse_section_node();
                         if (p.size() < 3)
                         {
-                            throw std::runtime_error("The amount of nodes is insufficient to construct a finite element.");
+                            throw std::runtime_error("The amount of nodes is insufficient to construct any finite element.");
                         }
                         continue;
                     }
@@ -52,11 +66,19 @@ namespace ModelGenerator
                     }
                 }
             }
+            if (p.empty())
+                throw std::runtime_error("NODE section is not found in the file.");
+            if (e.empty())
+                throw std::runtime_error("ELEMENT_SHELL section is not found in the file.");
         }
 
         ModelDescriptor::Node
         KfileParser::parse_node(const std::string &s)
         {
+
+            if (s.empty())
+                throw std::runtime_error("Current string is empty. It does not contain NODE description.");
+
             ModelDescriptor::Point2D p;
 
             std::stringstream str{s};
@@ -72,6 +94,9 @@ namespace ModelGenerator
         ModelDescriptor::Element
         KfileParser::parse_element(const std::string &s)
         {
+            if (s.empty())
+                throw std::runtime_error("Current string is empty. It does not contain ELEMENT description.");
+
             ModelDescriptor::Point2D p;
 
             std::stringstream str{s};
@@ -90,7 +115,7 @@ namespace ModelGenerator
             ModelDescriptor::Points P;
             std::string str;
             std::getline(stream, str); /**<  get a line from istream. For NODE section it contains node headers. Skip them*/
-            while (true)
+            while (!stream.eof())
             {
                 std::getline(stream, str); /**<  get a line from istream*/
 
@@ -100,6 +125,11 @@ namespace ModelGenerator
                 auto point = parse_node(str);
                 P.insert({point.id, point.p});
             }
+
+            if (P.empty())
+                throw std::runtime_error("Nodes container is empty.");
+
+            return P;
         }
 
         ModelDescriptor::Elements
@@ -107,7 +137,7 @@ namespace ModelGenerator
         {
             ModelDescriptor::Elements E;
             std::string str;
-            while (true)
+            while (!stream.eof())
             {
                 std::getline(stream, str); /*<  get a line from istream*/
 
@@ -117,6 +147,10 @@ namespace ModelGenerator
                 auto elem = parse_element(str);
                 E.insert({elem.id, elem.e});
             }
+            if (E.empty())
+                throw std::runtime_error("Eelements container is empty.");
+
+            return E;
         }
 
     } // FileParser

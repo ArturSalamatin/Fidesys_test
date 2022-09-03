@@ -16,7 +16,15 @@ namespace ModelGenerator
      *
      */
     ModelDescriptor::GridDesc
-    ModelDescriptorFromFile(const std::string &fileName);
+    MeshDescriptorFromFile(const std::string &fileName);
+
+    /**
+     * @brief Generates default material properties
+     *
+     * @return ModelDescriptor::MaterialPropDesc Decriptor of material properties, Young's modulus and Poisson ratio
+     */
+    ModelDescriptor::MaterialPropDesc
+    MaterialPropDescDefault();
 
     namespace FileParser
     {
@@ -27,13 +35,32 @@ namespace ModelGenerator
         class KfileParser
         {
         public:
-            KfileParser() = default;
+            /**
+             * @brief Construct a new Kfile Parser object cheicking that the file to read from exists
+             *
+             * @param fName The name of file with NODE and ELEMENT description
+             */
             KfileParser(const std::string &fName);
+            virtual ~KfileParser();
 
+            /**
+             * @brief Parse the entire file with sections to populate e and p fields
+             *
+             */
+            void KfileParser::parse();
+
+            /**
+             * @brief Container with mesh elements
+             *
+             */
             ModelDescriptor::Elements e;
+            /**
+             * @brief Container with mesh nodes
+             *
+             */
             ModelDescriptor::Points p;
 
-        public:
+        public: // should be protected/private
             /**
              * @brief Parse a single line of node record
              *

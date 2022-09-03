@@ -42,10 +42,7 @@ namespace ModelDescriptor
      */
     struct Element
     {
-        Element(unsigned int id, Element2D&& e) : id{id}, e{e}
-        {
-            std::sort(this->e.begin(), this->e.end());
-        }
+        Element(unsigned int id, const Element2D& e) noexcept;
 
         unsigned int id; /**< ID of the FEM element*/
         Element2D e;     /**< IDs of nodes that form the element*/

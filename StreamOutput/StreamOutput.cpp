@@ -70,8 +70,8 @@ namespace ModelDescriptor
         o << std::left << std::setw(17) <<  "container size:" << std::right << e.size();
         o << '\n';
 
-        for(const auto& el : e)
-            o << ModelDescriptor::Element{el.first, el.second};
+        for(auto& el : e)
+            o << ModelDescriptor::Element{el.first, std::move(el.second)};
 
         return o;
     }

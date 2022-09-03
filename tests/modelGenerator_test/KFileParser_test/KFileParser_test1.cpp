@@ -1,11 +1,10 @@
 #include <iostream>
 #include <string>
-// #include "../../../ModelGenerator/ModelDescriptor.h"
 #include "../../../ModelGenerator/ModelGenerator.h"
 #include "../../../StreamOutput/StreamOutput.h"
 
 /**
- * @brief Test of the class ModelDescriptor::MaterialPropDesc ctor
+ * @brief Test of the class ModelGenerator::FileParser::KfileParser string parsing
  */
 int main(int argc, char** argv) {
     
@@ -16,17 +15,16 @@ int main(int argc, char** argv) {
 
     if(out.id != 305)
     {
-        std::cout << "Fail ";
-        std::cout  << "\nReturn " << '\n' << out;
+        std::cerr << "Fail ";
+        std::cerr  << "\nReturn " << '\n' << out;
         return -1;
     }
     if(out.p(0) != 0.0 || out.p(1) != 0.0)
     {
-        std::cout << "Fail ";
-        std::cout  << "\nReturn " << '\n' << out;
+        std::cerr << "Fail ";
+        std::cerr  << "\nReturn " << '\n' << out;
         return -1;
     }
-
 
     str = {"     68       0.0221384        0.071282               0       0       0"};
 
@@ -34,14 +32,14 @@ int main(int argc, char** argv) {
 
     if(out.id != 68)
     {
-        std::cout << "Fail ";
-        std::cout  << "\nReturn " << '\n' << out;
+        std::cerr << "Fail ";
+        std::cerr  << "\nReturn " << '\n' << out;
         return -1;
     }
     if(out.p(0) != 0.0221384 || out.p(1) != 0.071282)
     {
-        std::cout << "Fail ";
-        std::cout  << "\nReturn " << '\n' << out;
+        std::cerr << "Fail ";
+        std::cerr  << "\nReturn " << '\n' << out;
         return -1;
     }
 

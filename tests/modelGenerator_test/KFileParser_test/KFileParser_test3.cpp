@@ -8,38 +8,49 @@
  */
 int main(int argc, char **argv)
 {
-
-    ModelGenerator::FileParser::KfileParser parser;
     try
     {
-        parser = ModelGenerator::FileParser::KfileParser("element_section.k");
+        ModelGenerator::FileParser::KfileParser parser{"element_section.k"};
     }
-    catch (std::runtime_error &e)
+    catch (const std::exception& e)
     {
-        std::cout << "Fail ";
-        std::cout << "\nReturn " << '\n'
+        std::cerr << "Fail ";
+        std::cerr << "\nReturn " << '\n'
                   << e.what() << std::flush;
         return -1;
     }
 
+    ModelGenerator::FileParser::KfileParser parser{"element_section.k"};
     // the file is opened
 
-    auto elements = parser.parse_section_element();
+    ModelDescriptor::Elements elements;
 
-    using namespace ModelDescriptor;
+    try
+    {
+        elements = parser.parse_section_element();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "Fail ";
+        std::cerr << "\nReturn " << '\n'
+                  << e.what() << std::flush;
+
+    }
+
+    using namespace ModelDescriptor; // for overloaded operator<<
 
     if (elements.size() != 38)
     {
-        std::cout << "Fail ";
-        std::cout << "\nReturn " << '\n'
+        std::cerr << "Fail ";
+        std::cerr << "\nReturn " << '\n'
                   << elements;
         return -1;
     }
 
     if (elements[10](0) != 12 || elements[10](1) != 20 || elements[10](2) != 21)
     {
-        std::cout << "Fail ";
-        std::cout << "\nReturn " << '\n'
+        std::cerr << "Fail ";
+        std::cerr << "\nReturn " << '\n'
                   << elements;
         return -1;
     }

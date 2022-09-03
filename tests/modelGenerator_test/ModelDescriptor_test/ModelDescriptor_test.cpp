@@ -8,8 +8,6 @@
 int main(int argc, char** argv) {
     
     ModelDescriptor::MaterialPropDesc desc{2E11, 0.3};
-
-    // test a CMake test on gitHub
  
     if(desc.E == 2E11 && desc.mu == 0.3)
     {
