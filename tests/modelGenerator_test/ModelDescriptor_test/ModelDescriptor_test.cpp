@@ -5,7 +5,8 @@
 /**
  * @brief Test of the class ModelDescriptor::MaterialPropDesc ctor
  */
-int main(int argc, char** argv) {
+int main(int argc, char** argv) 
+{
     
     ModelDescriptor::MaterialPropDesc desc{2E11, 0.3};
  
@@ -14,9 +15,11 @@ int main(int argc, char** argv) {
         std::cout << "Pass ";
         std::cout  << "\nReturn " << '\n' << desc;
         return 0;
-    }else{
-        std::cout << "Fail ";
-        std::cout  << "\nReturn " << '\n' << desc;
+    }
+    else
+    {
+        std::cerr << "Fail ";
+        std::cerr  << "\nReturn " << '\n' << desc;
         return -1;
     }
 
