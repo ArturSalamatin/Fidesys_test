@@ -14,25 +14,44 @@ namespace Solver
      */
     class Solver
     {
-        using Matrix = Eigen::SparseMatrix<double, Eigen::RowMajor>;
-        using Vector = Eigen::VectorXd;
-        using MatrixSolver = Eigen::SparseLU<Matrix>;
-
-    protected:
-        ModelDescriptor::GridDesc gridDesc;
-
-    protected:
-        Matrix A; //(1000,1000);
-        Vector b;
-        Vector x;
-
-        MatrixSolver solver;
 
     public:
         Solver(const ModelDescriptor::GridDesc &gridDesc) noexcept;
 
         bool solve();
     };
+
+    using SparseMatrix = Eigen::SparseMatrix<double, Eigen::RowMajor>;
+    using Vector = Eigen::VectorXd;
+    using MatrixSolver = Eigen::SparseLU<SparseMatrix>;
+
+    /**
+     * @brief Class that describes Ax=b problem
+     *
+     */
+    class ProblemDesc
+    {
+        public:
+        ProblemDesc(const ModelDescriptor::GridDesc& gridDesc) noexcept;
+
+        void set_A() noexcept;
+        void set_b() noexcept;
+
+        const SparseMatrix& Matrix() const noexcept;
+        const Vector& RHS() const noexcept;
+        const Vector& Solution() const noexcept;
+
+    protected:
+        ModelDescriptor::GridDesc gridDesc;
+
+    protected:
+        SparseMatrix A; //(1000,1000);
+        Vector b;
+        Vector x;
+
+        MatrixSolver solver;
+    };
+
 } // Solver
 
 #endif

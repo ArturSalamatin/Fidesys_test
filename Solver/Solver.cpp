@@ -1,17 +1,39 @@
 #include "Solver.h"
 
-bool Solver::Solver::solve()
+namespace Solver
 {
-    solver.compute(A);
-    if (solver.info() != Eigen::Success)
+
+    bool Solver::solve()
     {
-        // decomposition failed
-        return;
+        solver.compute(A);
+        if (solver.info() != Eigen::Success)
+        {
+            // decomposition failed
+            return;
+        }
+        x = solver.solve(b);
+        if (solver.info() != Eigen::Success)
+        {
+            // solving failed
+            return;
+        }
     }
-    x = solver.solve(b);
-    if (solver.info() != Eigen::Success)
+
+    ProblemDesc::ProblemDesc(const ModelDescriptor::GridDesc &gridDesc) noexcept
+        : gridDesc{gridDesc}
     {
-        // solving failed
-        return;
     }
-}
+
+    const SparseMatrix& ProblemDesc::Matrix() const noexcept
+    {
+        return A;
+    }
+    const Vector& ProblemDesc::RHS() const noexcept
+    {
+        return b;
+    }
+    const Vector& ProblemDesc::Solution() const noexcept
+    {
+        return x;
+    }
+} // Solver
