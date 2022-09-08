@@ -21,16 +21,16 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    std::cout << meshDesc.elements.size() << ' ' << meshDesc.points.size();
+    std::cout << meshDesc.elementsDesc.size() << ' ' << meshDesc.points.size();
 
 
     using namespace ModelDescriptor; // for overloaded operator<<
 
-    if (meshDesc.elements.size() != 38)
+    if (meshDesc.elementsDesc.size() != 38)
     {
         std::cerr << "Fail ";
         std::cerr << "\nReturn " << '\n'
-                  << meshDesc.elements;
+                  << meshDesc.elementsDesc;
         return -1;
     }
 
@@ -50,11 +50,11 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    if (meshDesc.elements[10](0) != 12 || meshDesc.elements[10](1) != 20 || meshDesc.elements[10](2) != 21)
+    if (meshDesc.elementsDesc[10](0) != 12 || meshDesc.elementsDesc[10](1) != 20 || meshDesc.elementsDesc[10](2) != 21)
     {
         std::cerr << "Fail ";
         std::cerr << "\nReturn " << '\n'
-                  << meshDesc.elements;
+                  << meshDesc.elementsDesc;
         return -1;
     }
 

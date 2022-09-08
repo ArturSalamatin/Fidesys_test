@@ -12,7 +12,7 @@ namespace ModelDescriptor
     } 
 
     
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Point2D& v)
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Point& v)
     {
         o << std::left << std::setw(3) <<  "x:" << std::right << std::scientific << std::setprecision(6) << v(0);
         o << ";\t";
@@ -20,7 +20,7 @@ namespace ModelDescriptor
         o << std::endl;
         return o;
     }
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Node& node)
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::PointWithID& node)
     {
         o << "<<<ModelDescriptor::Node>>>\n";
         o << std::left << std::setw(4) <<  "id:" << std::right << node.id;
@@ -29,14 +29,14 @@ namespace ModelDescriptor
 
         return o;
     }
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Points& p)
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::PointContainer& p)
     {
         o << "<<<ModelDescriptor::Points>>>\n";
         o << std::left << std::setw(17) <<  "container size:" << std::right << p.size();
         o << '\n';
 
         for(const auto& e : p)
-            o << ModelDescriptor::Node{e.first, e.second};
+            o << ModelDescriptor::PointWithID{e.first, e.second};
 
         return o;
     }
@@ -45,7 +45,7 @@ namespace ModelDescriptor
 
 
 
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Element2D& v)
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::ElementDesc& v)
     {
         o << std::left << std::setw(9) <<  "node_1:" << std::right << std::fixed << v(0);
         o << ";\t";
@@ -55,7 +55,7 @@ namespace ModelDescriptor
         o << std::endl;
         return o;
     }
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Element& e)
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::ElementDescWithID& e)
     {
         o << "<<<ModelDescriptor::Element>>>\n";
         o << std::left << std::setw(4) <<  "id:" << std::right << e.id;
@@ -64,14 +64,14 @@ namespace ModelDescriptor
 
         return o;
     }
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Elements& e)
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::ElementsDescContainer& e)
     {
         o << "<<<ModelDescriptor::Elements>>>\n";
         o << std::left << std::setw(17) <<  "container size:" << std::right << e.size();
         o << '\n';
 
         for(auto& el : e)
-            o << ModelDescriptor::Element{el.first, std::move(el.second)};
+            o << ModelDescriptor::ElementDescWithID{el.first, std::move(el.second)};
 
         return o;
     }

@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     ModelGenerator::FileParser::KfileParser parser{"node_section.k"};
     // the file is opened
 
-    ModelDescriptor::Points points;
+    ModelDescriptor::PointContainer points;
     try
     {
         points = parser.parse_section_node();

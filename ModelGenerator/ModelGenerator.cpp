@@ -72,14 +72,14 @@ namespace ModelGenerator
                 throw std::runtime_error("ELEMENT_SHELL section is not found in the file.");
         }
 
-        ModelDescriptor::Node
+        ModelDescriptor::PointWithID
         KfileParser::parse_node(const std::string &s)
         {
 
             if (s.empty())
                 throw std::runtime_error("Current string is empty. It does not contain NODE description.");
 
-            ModelDescriptor::Point2D p;
+            ModelDescriptor::Point p;
 
             std::stringstream str{s};
             unsigned int id;
@@ -88,31 +88,31 @@ namespace ModelGenerator
             str >> id;
             str >> x >> y;
 
-            return ModelDescriptor::Node{id, ModelDescriptor::Point2D{x, y}};
+            return ModelDescriptor::PointWithID{id, ModelDescriptor::Point{x, y}};
         }
 
-        ModelDescriptor::Element
+        ModelDescriptor::ElementDescWithID
         KfileParser::parse_element(const std::string &s)
         {
             if (s.empty())
                 throw std::runtime_error("Current string is empty. It does not contain ELEMENT description.");
 
-            ModelDescriptor::Point2D p;
+            ModelDescriptor::Point p;
 
             std::stringstream str{s};
             unsigned int id;
-            ModelDescriptor::Element2D v;
+            ModelDescriptor::ElementDesc v;
             unsigned int temp; /**< This column is irrelevant*/
 
             str >> id >> temp >> v(0) >> v(1) >> v(2);
 
-            return ModelDescriptor::Element{id, std::move(v)}; /**< point IDs are returned in a sorted order*/
+            return ModelDescriptor::ElementDescWithID{id, std::move(v)}; /**< point IDs are returned in a sorted order*/
         }
 
-        ModelDescriptor::Points
+        ModelDescriptor::PointContainer
         KfileParser::parse_section_node()
         {
-            ModelDescriptor::Points P;
+            ModelDescriptor::PointContainer P;
             std::string str;
             std::getline(stream, str); /**<  get a line from istream. For NODE section it contains node headers. Skip them*/
             while (!stream.eof())
@@ -132,10 +132,10 @@ namespace ModelGenerator
             return P;
         }
 
-        ModelDescriptor::Elements
+        ModelDescriptor::ElementsDescContainer
         KfileParser::parse_section_element()
         {
-            ModelDescriptor::Elements E;
+            ModelDescriptor::ElementsDescContainer E;
             std::string str;
             while (!stream.eof())
             {

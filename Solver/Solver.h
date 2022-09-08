@@ -7,6 +7,20 @@
 
 namespace Solver
 {
+    class ShapeFunction
+    {
+        public:
+
+
+        protected:
+        double area;
+
+    };
+
+
+
+
+
     /**
      * @brief Solver is responsible for solving a problem Ax=b
      * with specified matrix A and rhs b

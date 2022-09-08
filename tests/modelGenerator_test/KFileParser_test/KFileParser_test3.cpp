@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     ModelGenerator::FileParser::KfileParser parser{"element_section.k"};
     // the file is opened
 
-    ModelDescriptor::Elements elements;
+    ModelDescriptor::ElementsDescContainer elements;
 
     try
     {

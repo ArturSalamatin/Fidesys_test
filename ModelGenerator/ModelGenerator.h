@@ -53,12 +53,12 @@ namespace ModelGenerator
              * @brief Container with mesh elements
              *
              */
-            ModelDescriptor::Elements e;
+            ModelDescriptor::ElementsDescContainer e;
             /**
              * @brief Container with mesh nodes
              *
              */
-            ModelDescriptor::Points p;
+            ModelDescriptor::PointContainer p;
 
         public: // should be protected/private
             /**
@@ -67,7 +67,7 @@ namespace ModelGenerator
              * @param s Input string containing a node record
              * @return ModelDescriptor::Node Struct containing node descriptor (id + coords)
              */
-            static ModelDescriptor::Node parse_node(const std::string &s);
+            static ModelDescriptor::PointWithID parse_node(const std::string &s);
 
             /**
              * @brief Parse a 2D element from the string
@@ -75,21 +75,21 @@ namespace ModelGenerator
              * @param s String with the element id and node ids
              * @return ModelDescriptor::Element
              */
-            static ModelDescriptor::Element parse_element(const std::string &s);
+            static ModelDescriptor::ElementDescWithID parse_element(const std::string &s);
 
             /**
              * @brief Parse a NODE section of k-file
              *
              * @return ModelDescriptor::Points Container with mesh points
              */
-            ModelDescriptor::Points parse_section_node();
+            ModelDescriptor::PointContainer parse_section_node();
 
             /**
              * @brief Parse a ELEMENT_SHELL section of k-file
              *
              * @return ModelDescriptor::Elements Container with elements of the model
              */
-            ModelDescriptor::Elements parse_section_element();
+            ModelDescriptor::ElementsDescContainer parse_section_element();
 
         protected:
             std::ifstream stream; /*< Stream connected to a file with mesh description*/

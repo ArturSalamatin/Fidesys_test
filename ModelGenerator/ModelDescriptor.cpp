@@ -18,9 +18,9 @@ namespace ModelDescriptor
         assert((mu < 0.5) && "Poisson's ratio must be less than 0.5!");
     }
 
-    Element::Element(unsigned int id, const Element2D &e) noexcept : id{id}, e{e}
+    ElementDescWithID::ElementDescWithID(unsigned int id, const ElementDesc &e) noexcept : id{id}, e{e}
     {
-        std::sort(this->e.begin(), this->e.end());
+    //    std::sort(this->e.begin(), this->e.end()); // this operation might ruin the direction of nodes 
     }
 
 } // ModelDescriptor
