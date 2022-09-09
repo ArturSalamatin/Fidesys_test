@@ -20,9 +20,10 @@ int main(int argc, char **argv)
     TLLE::LagrangeElement lagrElem{e, props, c};
 
     TLLE::LagrangeElement::StiffnessMatrix K;
+    double area{0.5};
 
     K << 1.5, 0.5, 0.5, 1.5;
-    if (K != lagrElem.K[0][0])
+    if (area * K != lagrElem.K[0][0])
     {
         std::cerr << "Fail "
                   << "Wrong stiffness matrix K[0][0]"
@@ -31,7 +32,7 @@ int main(int argc, char **argv)
     }
 
     K << 1.0, 0.0, 0.0, 0.5;
-    if (K != lagrElem.K[1][1])
+    if (area * K != lagrElem.K[1][1])
     {
         std::cerr << "Fail "
                   << "Wrong stiffness matrix K[1][1]"
@@ -40,7 +41,7 @@ int main(int argc, char **argv)
     }
 
     K << -1.0, -0.5, 0.0, -0.5;
-    if (K != lagrElem.K[0][1])
+    if (area * K != lagrElem.K[0][1])
     {
         std::cerr << "Fail "
                   << "Wrong stiffness matrix K[0][1]"

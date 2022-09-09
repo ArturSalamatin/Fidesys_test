@@ -34,15 +34,15 @@ namespace CustomLagrangeElement
             : shapeFuncCoefs{
                   getShapeFuncCoef(Coords(0), Coords(1), Coords(2)),
                   getShapeFuncCoef(Coords(1), Coords(2), Coords(0)),
-                  getShapeFuncCoef(Coords(2), Coords(0), Coords(1))}
+                  getShapeFuncCoef(Coords(2), Coords(0), Coords(1))},
+              Area{setArea(Coords)}
         {
-            double its_area{setArea(Coords)};
             for (size_t i = 0; i < lnc; ++i)
                 for (size_t j = 0; j < lnc; ++j)
                 {
-                    shapeFuncCoefs[i][j] /= 2 * its_area;
-                    shapeFuncCoefs[i][j] /= 2 * its_area;
-                    shapeFuncCoefs[i][j] /= 2 * its_area;
+                    shapeFuncCoefs[i][j] /= 2 * Area;
+                    shapeFuncCoefs[i][j] /= 2 * Area;
+                    shapeFuncCoefs[i][j] /= 2 * Area;
                 }
         }
 
@@ -99,6 +99,9 @@ namespace CustomLagrangeElement
                 Coords(2).x(), Coords(2).y(), 0.5;
             return det.determinant();
         }
+
+    public:
+        double Area;
     };
 
 } // CustomLagrangeElement
