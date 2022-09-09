@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 {
     try
     {
-        ModelGenerator::FileParser::KfileParser parser{"node_section.k"};
+        ModelGenerator::FileParser::KfileParser parser{"data\\node_section.k"};
     }
     catch (std::runtime_error &e)
     {
@@ -20,7 +20,7 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    ModelGenerator::FileParser::KfileParser parser{"node_section.k"};
+    ModelGenerator::FileParser::KfileParser parser{"data\\node_section.k"};
     // the file is opened
 
     ModelDescriptor::PointContainer points;
