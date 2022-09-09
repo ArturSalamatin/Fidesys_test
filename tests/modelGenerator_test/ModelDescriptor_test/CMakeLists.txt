@@ -1,14 +1,29 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(ModelGeneratorTest)
+project(ModelDescriptorTest1)
 
-add_executable(modelGeneratorTest ModelDescriptor_test.cpp)
-target_link_libraries(modelGeneratorTest StreamOutput)
+add_executable(ModelDescriptorTest1 ModelDescriptor_test1.cpp)
+target_link_libraries(ModelDescriptorTest1 StreamOutput)
 
-target_compile_features(modelGeneratorTest PRIVATE cxx_std_17)
+target_compile_features(ModelDescriptorTest1 PRIVATE cxx_std_17)
 
-add_test(modelGeneratorTest_t modelGeneratorTest)
+add_test(ModelDescriptorTest1_t ModelDescriptorTest1)
 
-set_tests_properties(modelGeneratorTest_t PROPERTIES
+set_tests_properties(ModelDescriptorTest1_t PROPERTIES
+PASS_REGULAR_EXPRESSION "Pass"
+FAIL_REGULAR_EXPRESSION "Fail")
+
+
+
+project(ModelDescriptorTest2)
+
+add_executable(ModelDescriptorTest2 ModelDescriptor_test2.cpp)
+target_link_libraries(ModelDescriptorTest2 StreamOutput)
+
+target_compile_features(ModelDescriptorTest2 PRIVATE cxx_std_17)
+
+add_test(ModelDescriptorTest2_t ModelDescriptorTest2)
+
+set_tests_properties(ModelDescriptorTest2_t PROPERTIES
 PASS_REGULAR_EXPRESSION "Pass"
 FAIL_REGULAR_EXPRESSION "Fail")

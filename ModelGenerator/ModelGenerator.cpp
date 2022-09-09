@@ -17,6 +17,25 @@ namespace ModelGenerator
         return ModelDescriptor::MaterialPropDesc{2E11, 0.3};
     }
 
+    std::tuple<ModelDescriptor::PointContainer, ModelDescriptor::ElementsDescContainer>
+    SimplexGenerator()
+    {
+        ModelDescriptor::Point p1{0.0, 0.0}, p2{1.0, 0.0}, p3{0.0, 1.0}; /**< simplex in 2D space*/
+        ModelDescriptor::PointContainer points{p1, p2, p3};
+        ModelDescriptor::ElementDesc eDesc{0, 1, 2};
+        ModelDescriptor::ElementsDescContainer elements{eDesc};
+        return {points, elements};
+    }
+
+    ModelDescriptor::GridDesc
+    GridGenerator()
+    {
+        ModelDescriptor::Point p1{0.0, 0.0}, p2{1.0, 0.0}, p3{0.0, 1.0}; /**< simplex in 2D space*/
+        ModelDescriptor::PointWithIdContainer pContainer{{0, p1}, {1, p2}, {2, p3}};
+        ModelDescriptor::ElementsDescWithIdContainer eContainer{{0, {0, 1, 2}}};
+        return {pContainer, eContainer};
+    }
+
     namespace FileParser
     {
         KfileParser::KfileParser(const std::string &fName)
@@ -109,21 +128,18 @@ namespace ModelGenerator
             return ModelDescriptor::ElementDescWithID{id, std::move(v)}; /**< point IDs are returned in a sorted order*/
         }
 
-        ModelDescriptor::PointContainer
+        ModelDescriptor::PointWithIdContainer
         KfileParser::parse_section_node()
         {
-            ModelDescriptor::PointContainer P;
+            ModelDescriptor::PointWithIdContainer P;
             std::string str;
             std::getline(stream, str); /**<  get a line from istream. For NODE section it contains node headers. Skip them*/
             while (!stream.eof())
             {
                 std::getline(stream, str); /**<  get a line from istream*/
-
                 if (str[0] == '$' || str == "*END")
                     return P;
-
-                auto point = parse_node(str);
-                P.insert({point.id, point.p});
+                P.emplace_back(parse_node(str));
             }
 
             if (P.empty())
@@ -132,10 +148,10 @@ namespace ModelGenerator
             return P;
         }
 
-        ModelDescriptor::ElementsDescContainer
+        ModelDescriptor::ElementsDescWithIdContainer
         KfileParser::parse_section_element()
         {
-            ModelDescriptor::ElementsDescContainer E;
+            ModelDescriptor::ElementsDescWithIdContainer E;
             std::string str;
             while (!stream.eof())
             {
@@ -143,9 +159,7 @@ namespace ModelGenerator
 
                 if (str[0] == '$' || str == "*END")
                     return E;
-
-                auto elem = parse_element(str);
-                E.insert({elem.id, elem.e});
+                E.emplace_back(parse_element(str));
             }
             if (E.empty())
                 throw std::runtime_error("Eelements container is empty.");

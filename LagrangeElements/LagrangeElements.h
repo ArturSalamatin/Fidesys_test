@@ -34,13 +34,13 @@ namespace TLLE // TriangleLinearLagrangeElement
         LagrangeElement(
             const ModelDescriptor::Element &coords,
             const ModelDescriptor::MaterialPropDesc &propDesc,
-            MaterialMatrix *c) noexcept
+            const MaterialMatrix& c) noexcept
             : Coords{coords}, N{coords}
         {
             std::array<StrainMatrix, LNC> B{N.ShapeFuncGradient<0>(), N.ShapeFuncGradient<1>(), N.ShapeFuncGradient<2>()};
             for (size_t i = 0; i < LNC; ++i)
                 for (size_t j = 0; j < LNC; ++j)
-                    K[i][j] = Area() * Eigen::Transpose(B[i].val) * (c->val) * B[j].val;
+                    K[i][j] = Area() * Eigen::Transpose(B[i].val) * (c.val) * B[j].val;
         }
 
         std::array<std::array<StiffnessMatrix, LNC>, LNC> K;

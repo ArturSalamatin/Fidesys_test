@@ -10,14 +10,12 @@
  */
 int main(int argc, char **argv)
 {
-    ModelDescriptor::Point p1{0.0, 0.0}, p2{1.0, 0.0}, p3{0.0, 1.0}; /**< simplex in 2D space*/
-    ModelDescriptor::PointContainer points{{0, p1}, {1, p2}, {2, p3}};
-    ModelDescriptor::Element e{p1, p2, p3};
+    auto gridDesc{ModelGenerator::GridGenerator()};
 
     ModelDescriptor::MaterialPropDesc props{1.0, 0.0}; // very simple properties
-    TLLE::LagrangeElement::MaterialMatrix *c = new ModelDescriptor::PlainStressMaterialMatrix{props};
+    TLLE::LagrangeElement::MaterialMatrix c{props};
 
-    TLLE::LagrangeElement lagrElem{e, props, c};
+    TLLE::LagrangeElement lagrElem{gridDesc.elements[0], props, c};
 
     TLLE::LagrangeElement::StiffnessMatrix K;
     double area{0.5};

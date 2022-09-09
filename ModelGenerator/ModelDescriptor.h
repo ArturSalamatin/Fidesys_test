@@ -27,10 +27,10 @@ namespace ModelDescriptor
         double mu; /**<  Poisson's ratio, - */
     };
 
-/**
- * @brief Material matrix for a plain stress problem
- * 
- */
+    /**
+     * @brief Material matrix for a plain stress problem
+     *
+     */
     struct PlainStressMaterialMatrix
     {
         Eigen::Matrix<double, 3, 3, Eigen::RowMajor> val;
@@ -40,8 +40,6 @@ namespace ModelDescriptor
             val *= desc.E / (1 - desc.mu * desc.mu);
         }
     };
-
-
 
     using Point = Eigen::Vector2d; /**< (x;y) coordinates of points in 2D space, in meters */
 
@@ -65,22 +63,29 @@ namespace ModelDescriptor
         ElementDesc e;   /**< IDs of nodes that form the element*/
     };
 
-    using PointContainer = std::unordered_map<unsigned int, Point>;              /**< Container for points in 2D space accessed by its id in the mesh. The ids are not nesecceraly indexed as 0,1,2,.. */
-    using ElementsDescContainer = std::unordered_map<unsigned int, ElementDesc>; /**< Container for FEM elements in 2D space accessed by its id in the element container. The ids are not nesecceraly indexed as 0,1,2,.. */
+    using PointWithIdContainer = std::vector<PointWithID>;
+    using ElementsDescWithIdContainer = std::vector<ElementDescWithID>;
+    using PointContainer = std::vector<Point>;              /**< Container for points in 2D space accessed by its id in the mesh. The ids are not nesecceraly indexed as 0,1,2,.. */
+    using ElementsDescContainer = std::vector<ElementDesc>; /**< Container for FEM elements in 2D space accessed by its id in the element container. The ids are not nesecceraly indexed as 0,1,2,.. */
 
     using Element = Eigen::Matrix<Point, 3, 1>;                          /**< (x;y) coords of 3 points in 2D space that form the triangular FEM, in meters */
-    using ElementsContainer = std::unordered_map<unsigned int, Element>; /**< Container for FEM elements in 2D space accessed by its id in the element container. The ids are not nesecceraly indexed as 0,1,2,.. */
+    using ElementsContainer = std::vector<Element>; /**< Container for FEM elements in 2D space accessed by its id in the element container. The ids are not nesecceraly indexed as 0,1,2,.. */
 
     struct GridDesc
     {
     public:
+        std::vector<unsigned int> pointCodes; /**< from [0,1,2..] ids get the original ids*/
+        std::unordered_map<unsigned int, unsigned int> reversePointCodes; /**< from original ids restore new ids [0,1,2...]*/
+
         PointContainer points;
-        ElementsDescContainer elementsDesc;
+     //   ElementsDescContainer elementsDesc;
 
         ElementsContainer elements;
         GridDesc() = default;
 
-        GridDesc(const PointContainer &points, const ElementsDescContainer elements);
+        GridDesc(const PointWithIdContainer &points, const ElementsDescWithIdContainer elements) noexcept;
+        size_t PointsCount() const noexcept { return points.size(); }
+        size_t ElementsCount() const noexcept { return elements.size(); }
     };
 } // ModelDescriptor
 #endif

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <tuple>
 #include <exception>
 
 #include "ModelDescriptor.h"
@@ -25,6 +26,17 @@ namespace ModelGenerator
      */
     ModelDescriptor::MaterialPropDesc
     MaterialPropDescDefault();
+
+    /**
+     * @brief Generates a container of points with corresponding element descriptor container
+     *
+     * @return std::tuple<ModelDescriptor::PointContainer, ModelDescriptor::ElementsDescContainer>
+     */
+    std::tuple<ModelDescriptor::PointContainer, ModelDescriptor::ElementsDescContainer>
+    SimplexGenerator();
+
+    ModelDescriptor::GridDesc
+    GridGenerator();
 
     namespace FileParser
     {
@@ -53,12 +65,12 @@ namespace ModelGenerator
              * @brief Container with mesh elements
              *
              */
-            ModelDescriptor::ElementsDescContainer e;
+            ModelDescriptor::ElementsDescWithIdContainer e;
             /**
              * @brief Container with mesh nodes
              *
              */
-            ModelDescriptor::PointContainer p;
+            ModelDescriptor::PointWithIdContainer p;
 
         public: // should be protected/private
             /**
@@ -82,14 +94,14 @@ namespace ModelGenerator
              *
              * @return ModelDescriptor::Points Container with mesh points
              */
-            ModelDescriptor::PointContainer parse_section_node();
+            ModelDescriptor::PointWithIdContainer parse_section_node();
 
             /**
              * @brief Parse a ELEMENT_SHELL section of k-file
              *
              * @return ModelDescriptor::Elements Container with elements of the model
              */
-            ModelDescriptor::ElementsDescContainer parse_section_element();
+            ModelDescriptor::ElementsDescWithIdContainer parse_section_element();
 
         protected:
             std::ifstream stream; /*< Stream connected to a file with mesh description*/
