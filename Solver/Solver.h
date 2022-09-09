@@ -9,17 +9,10 @@ namespace Solver
 {
     class ShapeFunction
     {
-        public:
-
-
-        protected:
+    public:
+    protected:
         double area;
-
     };
-
-
-
-
 
     /**
      * @brief Solver is responsible for solving a problem Ax=b
@@ -45,15 +38,15 @@ namespace Solver
      */
     class ProblemDesc
     {
-        public:
-        ProblemDesc(const ModelDescriptor::GridDesc& gridDesc) noexcept;
+    public:
+        ProblemDesc(const ModelDescriptor::GridDesc &gridDesc) noexcept;
 
         void set_A() noexcept;
         void set_b() noexcept;
 
-        const SparseMatrix& Matrix() const noexcept;
-        const Vector& RHS() const noexcept;
-        const Vector& Solution() const noexcept;
+        const SparseMatrix &Matrix() const noexcept;
+        const Vector &RHS() const noexcept;
+        const Vector &Solution() const noexcept;
 
     protected:
         ModelDescriptor::GridDesc gridDesc;
