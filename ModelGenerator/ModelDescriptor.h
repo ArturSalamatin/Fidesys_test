@@ -74,11 +74,11 @@ namespace ModelDescriptor
     struct GridDesc
     {
     public:
-        std::vector<unsigned int> pointCodes; /**< from [0,1,2..] ids get the original ids*/
-        std::unordered_map<unsigned int, unsigned int> reversePointCodes; /**< from original ids restore new ids [0,1,2...]*/
+        std::vector<unsigned int> pointCodes; /*< from [0,1,2..] ids get the original ids*/
+        std::unordered_map<unsigned int, size_t> reversePointCodes; /*< from original ids restore new ids [0,1,2...]*/
 
         PointContainer points;
-     //   ElementsDescContainer elementsDesc;
+        ElementsDescContainer elementsDesc;
 
         ElementsContainer elements;
         GridDesc() = default;

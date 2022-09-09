@@ -38,7 +38,7 @@ namespace ModelDescriptor
         for (const auto &[id, e] : Elements)
         {
  //           elementsCodes.push_back(id);
-        //    elementsDesc.emplace_back(reversePointCodes[e(0)], reversePointCodes[e(1)], reversePointCodes[e(2)]);
+            elementsDesc.emplace_back(reversePointCodes[e(0)], reversePointCodes[e(1)], reversePointCodes[e(2)]);
             // const auto& eD = elementsDesc.back();
             elements.emplace_back(points[reversePointCodes[e(0)]], points[reversePointCodes[e(1)]], points[reversePointCodes[e(2)]]);
         }

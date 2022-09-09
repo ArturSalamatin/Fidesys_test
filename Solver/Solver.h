@@ -2,6 +2,7 @@
 #define SOLVER_H
 
 #include <unordered_map>
+#include <omp.h>
 #include "../eigen/Eigen/SparseCore"
 #include "../eigen/Eigen/SparseLU"
 
@@ -31,12 +32,13 @@ namespace Solver
             problem_size = pCount * dof;
 
             ModelDescriptor::PlainStressMaterialMatrix c{propDesc};
-            std::unordered_map<unsigned int, TLLE::LagrangeElement> lagrElems;
+            lagrElems.resize(gridDesc.ElementsCount());
 
-            for (const auto &[key, value] : gridDesc.elements)
+// #pragma omp parallel for
+            for (size_t l = 0; l < gridDesc.ElementsCount(); ++l)
+            //  for (const auto &[key, value] : gridDesc.elements)
             {
-                lagrElems.emplace(key,
-                                  value,
+                lagrElems.emplace(l, value,
                                   propDesc,
                                   c);
             }
@@ -55,19 +57,25 @@ namespace Solver
 
     protected:
         ModelDescriptor::GridDesc gridDesc;
+        std::vector<TLLE::LagrangeElement> lagrElems;
         SparseMatrix A;
         Vector b;
         unsigned int problem_size;
 
-        void set_A() noexcept
+        void set_A(const std::vector<TLLE::LagrangeElement> &lagrElems) noexcept
         {
             A = SparseMatrix{problem_size, problem_size};
-         //   for(const auto& [key, elem]: )
-
+            for (size_t l = 0; l < lagrElems.size(); ++l)
+            {
+                const auto &K = lagrElems[l].K;
+                const auto &globalNodeId = gridDesc.elementsDesc[l];
+            }
         }
         void set_b() noexcept
         {
-
+            b = Vector(problem_size);
+            for (auto &it : b)
+                it = 0.0;
         }
     };
 
