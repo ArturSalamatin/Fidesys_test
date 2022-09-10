@@ -6,4 +6,5 @@ enable_testing()
 
 add_subdirectory(ModelGenerator)
 add_subdirectory(StreamOutput)
+#add_subdirectory(LagrangeElements)
 add_subdirectory(tests)

@@ -11,13 +11,15 @@ namespace ModelDescriptor
 {
     std::ostream& operator<<(std::ostream& o, const ModelDescriptor::MaterialPropDesc& desc);
 
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Point2D& v);
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Node& node);
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Points& p);
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Point& v);
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::PointWithID& node);
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::PointContainer& p);
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::PointWithIdContainer& p);
 
 
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Element2D& v);
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Element& e);
-    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::Elements& e);
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::ElementDesc& v);
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::ElementDescWithID& e);
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::ElementsDescContainer& e);
+    std::ostream& operator<<(std::ostream& o, const ModelDescriptor::ElementsDescWithIdContainer& e);
 } // ModelDescriptor
 #endif

@@ -17,6 +17,25 @@ namespace ModelGenerator
         return ModelDescriptor::MaterialPropDesc{2E11, 0.3};
     }
 
+    std::tuple<ModelDescriptor::PointContainer, ModelDescriptor::ElementsDescContainer>
+    SimplexGenerator()
+    {
+        ModelDescriptor::Point p1{0.0, 0.0}, p2{1.0, 0.0}, p3{0.0, 1.0}; /**< simplex in 2D space*/
+        ModelDescriptor::PointContainer points{p1, p2, p3};
+        ModelDescriptor::ElementDesc eDesc{0, 1, 2};
+        ModelDescriptor::ElementsDescContainer elements{eDesc};
+        return {points, elements};
+    }
+
+    ModelDescriptor::GridDesc
+    GridGenerator()
+    {
+        ModelDescriptor::Point p1{0.0, 0.0}, p2{1.0, 0.0}, p3{0.0, 1.0}; /**< simplex in 2D space*/
+        ModelDescriptor::PointWithIdContainer pContainer{{0, p1}, {1, p2}, {2, p3}};
+        ModelDescriptor::ElementsDescWithIdContainer eContainer{{0, {0, 1, 2}}};
+        return {pContainer, eContainer};
+    }
+
     namespace FileParser
     {
         KfileParser::KfileParser(const std::string &fName)
@@ -72,14 +91,14 @@ namespace ModelGenerator
                 throw std::runtime_error("ELEMENT_SHELL section is not found in the file.");
         }
 
-        ModelDescriptor::Node
+        ModelDescriptor::PointWithID
         KfileParser::parse_node(const std::string &s)
         {
 
             if (s.empty())
                 throw std::runtime_error("Current string is empty. It does not contain NODE description.");
 
-            ModelDescriptor::Point2D p;
+            ModelDescriptor::Point p;
 
             std::stringstream str{s};
             unsigned int id;
@@ -88,42 +107,39 @@ namespace ModelGenerator
             str >> id;
             str >> x >> y;
 
-            return ModelDescriptor::Node{id, ModelDescriptor::Point2D{x, y}};
+            return ModelDescriptor::PointWithID{id, ModelDescriptor::Point{x, y}};
         }
 
-        ModelDescriptor::Element
+        ModelDescriptor::ElementDescWithID
         KfileParser::parse_element(const std::string &s)
         {
             if (s.empty())
                 throw std::runtime_error("Current string is empty. It does not contain ELEMENT description.");
 
-            ModelDescriptor::Point2D p;
+            ModelDescriptor::Point p;
 
             std::stringstream str{s};
             unsigned int id;
-            ModelDescriptor::Element2D v;
+            ModelDescriptor::ElementDesc v;
             unsigned int temp; /**< This column is irrelevant*/
 
             str >> id >> temp >> v(0) >> v(1) >> v(2);
 
-            return ModelDescriptor::Element{id, std::move(v)}; /**< point IDs are returned in a sorted order*/
+            return ModelDescriptor::ElementDescWithID{id, std::move(v)}; /**< point IDs are returned in a sorted order*/
         }
 
-        ModelDescriptor::Points
+        ModelDescriptor::PointWithIdContainer
         KfileParser::parse_section_node()
         {
-            ModelDescriptor::Points P;
+            ModelDescriptor::PointWithIdContainer P;
             std::string str;
             std::getline(stream, str); /**<  get a line from istream. For NODE section it contains node headers. Skip them*/
             while (!stream.eof())
             {
                 std::getline(stream, str); /**<  get a line from istream*/
-
                 if (str[0] == '$' || str == "*END")
                     return P;
-
-                auto point = parse_node(str);
-                P.insert({point.id, point.p});
+                P.emplace_back(parse_node(str));
             }
 
             if (P.empty())
@@ -132,10 +148,10 @@ namespace ModelGenerator
             return P;
         }
 
-        ModelDescriptor::Elements
+        ModelDescriptor::ElementsDescWithIdContainer
         KfileParser::parse_section_element()
         {
-            ModelDescriptor::Elements E;
+            ModelDescriptor::ElementsDescWithIdContainer E;
             std::string str;
             while (!stream.eof())
             {
@@ -143,9 +159,7 @@ namespace ModelGenerator
 
                 if (str[0] == '$' || str == "*END")
                     return E;
-
-                auto elem = parse_element(str);
-                E.insert({elem.id, elem.e});
+                E.emplace_back(parse_element(str));
             }
             if (E.empty())
                 throw std::runtime_error("Eelements container is empty.");

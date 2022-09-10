@@ -27,45 +27,65 @@ namespace ModelDescriptor
         double mu; /**<  Poisson's ratio, - */
     };
 
-    using Point2D = Eigen::Vector2d; /**< (x;y) coordinates of points in 2D space, in meters */
-    using Node = struct
-    {
-        unsigned int id;
-        Point2D p;
-    }; /**< This struct binds the point (x;y) to its id in the mesh */
-
-    using Element2D = Eigen::Matrix<unsigned int, 3, 1>; /**< (x;y) coordinates of points in 2D space, in meters */
-    
     /**
-     * @brief Struct describing a finite element with ID. The nodes f the element are stored in a sorted order.
-     * 
+     * @brief Material matrix for a plain stress problem
+     *
      */
-    struct Element
+    struct PlainStressMaterialMatrix
     {
-        Element(unsigned int id, const Element2D& e) noexcept;
-
-        unsigned int id; /**< ID of the FEM element*/
-        Element2D e;     /**< IDs of nodes that form the element*/
+        Eigen::Matrix<double, 3, 3, Eigen::RowMajor> val;
+        PlainStressMaterialMatrix(const MaterialPropDesc &desc)
+        {
+            val << 1.0, desc.mu, 0.0, desc.mu, 1.0, 0.0, 0.0, 0.0, (1 - desc.mu) / 2;
+            val *= desc.E / (1 - desc.mu * desc.mu);
+        }
     };
 
-    using Points = std::unordered_map<unsigned int, Point2D>;     /**< Container for points in 2D space accessed by its id in the mesh. The ids are not nesecceraly indexed as 0,1,2,.. */
-    using Elements = std::unordered_map<unsigned int, Element2D>; /**< Container for FEM elements in 2D space accessed by its id in the element container. The ids are not nesecceraly indexed as 0,1,2,.. */
+    using Point = Eigen::Vector2d; /**< (x;y) coordinates of points in 2D space, in meters */
+
+    struct PointWithID
+    {
+        unsigned int id;
+        Point p;
+    }; /**< This struct binds the point (x;y) to its id in the mesh */
+
+    using ElementDesc = Eigen::Matrix<unsigned int, 3, 1>; /**< global indices of points in 2D space that form the FEM, in meters */
+
+    /**
+     * @brief Struct describing a finite element with ID. The nodes f the element are stored in a sorted order.
+     *
+     */
+    struct ElementDescWithID
+    {
+        ElementDescWithID(unsigned int id, const ElementDesc &e) noexcept;
+
+        unsigned int id; /**< ID of the FEM element*/
+        ElementDesc e;   /**< IDs of nodes that form the element*/
+    };
+
+    using PointWithIdContainer = std::vector<PointWithID>;
+    using ElementsDescWithIdContainer = std::vector<ElementDescWithID>;
+    using PointContainer = std::vector<Point>;              /**< Container for points in 2D space accessed by its id in the mesh. The ids are not nesecceraly indexed as 0,1,2,.. */
+    using ElementsDescContainer = std::vector<ElementDesc>; /**< Container for FEM elements in 2D space accessed by its id in the element container. The ids are not nesecceraly indexed as 0,1,2,.. */
+
+    using Element = Eigen::Matrix<Point, 3, 1>;                          /**< (x;y) coords of 3 points in 2D space that form the triangular FEM, in meters */
+    using ElementsContainer = std::vector<Element>; /**< Container for FEM elements in 2D space accessed by its id in the element container. The ids are not nesecceraly indexed as 0,1,2,.. */
 
     struct GridDesc
     {
     public:
-        Points points;
-        Elements elements;
+        std::vector<unsigned int> pointCodes; /*< from [0,1,2..] ids get the original ids*/
+        std::unordered_map<unsigned int, size_t> reversePointCodes; /*< from original ids restore new ids [0,1,2...]*/
 
-        // void push(const Node &node)
-        // {
-        //     points.insert({node.id, node.p});
-        // }
+        PointContainer points;
+        ElementsDescContainer elementsDesc;
 
-        // void push(const Element &elem)
-        // {
-        //     elements.insert({elem.id, elem.e});
-        // }
+        ElementsContainer elements;
+        GridDesc() = default;
+
+        GridDesc(const PointWithIdContainer &points, const ElementsDescWithIdContainer elements) noexcept;
+        size_t PointsCount() const noexcept { return points.size(); }
+        size_t ElementsCount() const noexcept { return elements.size(); }
     };
 } // ModelDescriptor
 #endif

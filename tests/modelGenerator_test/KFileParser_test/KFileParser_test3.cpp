@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 {
     try
     {
-        ModelGenerator::FileParser::KfileParser parser{"element_section.k"};
+        ModelGenerator::FileParser::KfileParser parser{"data\\element_section.k"};
     }
     catch (const std::exception& e)
     {
@@ -20,10 +20,10 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    ModelGenerator::FileParser::KfileParser parser{"element_section.k"};
+    ModelGenerator::FileParser::KfileParser parser{"data\\element_section.k"};
     // the file is opened
 
-    ModelDescriptor::Elements elements;
+    ModelDescriptor::ElementsDescWithIdContainer elements;
 
     try
     {
@@ -47,7 +47,11 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    if (elements[10](0) != 12 || elements[10](1) != 20 || elements[10](2) != 21)
+size_t id = 9;
+    if (
+        elements[id].e(0) != 21 || 
+        elements[id].e(1) != 12 || 
+        elements[id].e(2) != 20)
     {
         std::cerr << "Fail ";
         std::cerr << "\nReturn " << '\n'

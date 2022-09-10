@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    std::cout << "Pass ";
+    std::cout << "Pass " << std::flush;
 
     return 0;
 }
