@@ -13,6 +13,8 @@ set_tests_properties(SolverTest1_t PROPERTIES
 PASS_REGULAR_EXPRESSION "Pass"
 FAIL_REGULAR_EXPRESSION "Fail")
 
+
+
 project(SolverTest2)
 
 add_executable(SolverTest2 Solver_test2.cpp)
@@ -20,8 +22,24 @@ target_link_libraries(SolverTest2 modelGenerator)
 
 target_compile_features(SolverTest2 PRIVATE cxx_std_17)
 
-add_test(NAME SolverTest2_t COMMAND SolverTest2 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+add_test(NAME SolverTest2_t COMMAND SolverTest2)
 
 set_tests_properties(SolverTest2_t PROPERTIES
+PASS_REGULAR_EXPRESSION "Pass"
+FAIL_REGULAR_EXPRESSION "Fail")
+
+
+
+
+project(SolverTest3)
+
+add_executable(SolverTest3 Solver_test3.cpp)
+target_link_libraries(SolverTest3 modelGenerator)
+
+target_compile_features(SolverTest3 PRIVATE cxx_std_17)
+
+add_test(NAME SolverTest3_t COMMAND SolverTest3 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+set_tests_properties(SolverTest3_t PROPERTIES
 PASS_REGULAR_EXPRESSION "Pass"
 FAIL_REGULAR_EXPRESSION "Fail")

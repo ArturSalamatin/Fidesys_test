@@ -20,7 +20,8 @@ namespace ModelGenerator
     MeshDescriptorFromFile(const std::string &fileName);
 
     /**
-     * @brief Generates default material properties
+     * @brief Generates default material properties\n
+     * E = 2E11, mu = 0.3
      *
      * @return ModelDescriptor::MaterialPropDesc Decriptor of material properties, Young's modulus and Poisson ratio
      */
@@ -37,7 +38,7 @@ namespace ModelGenerator
 
     ModelDescriptor::GridDesc
     GridGenerator();
-    
+
     ModelDescriptor::GridDesc
     GridGenerator2();
 

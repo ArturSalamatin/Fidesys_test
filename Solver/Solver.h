@@ -134,14 +134,12 @@ namespace Solver
             A.setFromTriplets(coefficients.begin(), coefficients.end());
             A.makeCompressed();
         }
-        void set_b() noexcept
+        void set_b(double w = 1.0, double f = 1.0) noexcept
         {
             b = Vector(problem_size);
             for (auto &it : b)
                 it = 0.0;
 
-            double w = 1.0;
-            double f = 1.0;
             for (size_t eId = 0; eId < gridDesc.ElementsCount(); ++eId)
             {
                 const auto &p1Id = gridDesc.elementsDesc[eId](0);
@@ -192,9 +190,9 @@ namespace Solver
         template <unsigned char lnc, unsigned char dof>
         bool solve(const ProblemDesc<lnc, dof> &desc)
         {
-            auto const& A = desc.Matrix();
-        //    solver.analyzePattern(desc.Matrix());
-        //    solver.factorize(A); 
+            auto const &A = desc.Matrix();
+            //    solver.analyzePattern(desc.Matrix());
+            //    solver.factorize(A);
             solver.compute(desc.Matrix());
             if (solver.info() != Eigen::Success)
             {
