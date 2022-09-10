@@ -31,10 +31,12 @@ namespace TLLE // TriangleLinearLagrangeElement
 
         using StiffnessMatrix = CustomLagrangeElement::CustomStiffnessMatrix<DOF>;
 
+        LagrangeElement() = default;
+
         LagrangeElement(
             const ModelDescriptor::Element &coords,
             const ModelDescriptor::MaterialPropDesc &propDesc,
-            const MaterialMatrix& c) noexcept
+            const MaterialMatrix &c) noexcept
             : Coords{coords}, N{coords}
         {
             std::array<StrainMatrix, LNC> B{N.ShapeFuncGradient<0>(), N.ShapeFuncGradient<1>(), N.ShapeFuncGradient<2>()};

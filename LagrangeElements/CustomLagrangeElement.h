@@ -41,17 +41,8 @@ namespace CustomLagrangeElement
                 for (size_t j = 0; j < lnc; ++j)
                 {
                     shapeFuncCoefs[i][j] /= 2 * Area;
-                    shapeFuncCoefs[i][j] /= 2 * Area;
-                    shapeFuncCoefs[i][j] /= 2 * Area;
                 }
         }
-
-        // template <unsigned char local_node_idx>
-        // double getShapeMatrix(double x, double y) const noexcept
-        // {
-        //     static_assert(local_node_idx < lnc, "CustomLagrangeElement::ShapeMatrix::getShapeMatrix wrong template parameter");
-        //     return ShapeFuncValue<local_node_idx>(x, y);
-        // }
 
         /**
          * @brief N = 1 + a*x + b*y
