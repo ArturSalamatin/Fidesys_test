@@ -38,6 +38,17 @@ namespace ModelGenerator
         return {pContainer, eContainer};
     }
 
+    ModelDescriptor::GridDesc
+    GridGenerator2()
+    {
+        double w = 1;
+        double h = 1;
+        ModelDescriptor::Point p1{0.0, 0.0}, p2{w, 0.0}, p3{0.0, h}, p4{w, h}; /**< simplex in 2D space*/
+        ModelDescriptor::PointWithIdContainer pContainer{{0, p1}, {1, p2}, {2, p3}, {3, p4}};
+        ModelDescriptor::ElementsDescWithIdContainer eContainer{{0, {0, 1, 2}}, {1, {1, 3, 2}}};
+        return {pContainer, eContainer};
+    }
+
     namespace FileParser
     {
         KfileParser::KfileParser(const std::string &fName)

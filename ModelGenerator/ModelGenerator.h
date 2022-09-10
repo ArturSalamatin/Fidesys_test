@@ -37,6 +37,9 @@ namespace ModelGenerator
 
     ModelDescriptor::GridDesc
     GridGenerator();
+    
+    ModelDescriptor::GridDesc
+    GridGenerator2();
 
     namespace FileParser
     {

@@ -19,9 +19,6 @@ int main(int argc, char **argv)
     problem.set_A();
     problem.set_b();
 
-    std::cout << problem.RHS() << '\n';
-    std::cout << problem.Matrix() << '\n';
-
     Solver::Solver solver;
     try
     {
@@ -31,20 +28,23 @@ int main(int argc, char **argv)
     {
         std::cerr << "Fail ";
         std::cerr << e.what() << '\n';
+
+        std::cerr << problem.RHS() << '\n';
+        std::cerr << problem.Matrix() << '\n';
         return -1;
     }
-    
-    for(auto v : solver.Solution())
-    {
-        if(v != 0.0)
-        {
-        std::cerr << "Fail ";
-        std::cerr << "Solution is wrong." << '\n';
-        return -1;
 
+    for (auto v : solver.Solution())
+    {
+        if (v != 0.0)
+        {
+            std::cerr << "Fail ";
+            std::cerr << "Solution is wrong." << '\n';
+            std::cerr << solver.Solution();
+            return -1;
         }
     }
 
-    std::cout << "Pass " << std::flush;
+    std::cout << "Pass " << std::endl;
     return 0;
 }
