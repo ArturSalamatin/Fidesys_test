@@ -5,16 +5,18 @@
 #include <unordered_map>
 // #include <omp.h>
 #include "../eigen/Eigen/SparseCore"
+#include "../eigen/Eigen/OrderingMethods"
 #include "../eigen/Eigen/SparseLU"
+// #include "../eigen/Eigen/SparseQR"
 
 //#include "../ModelGenerator/ModelDescriptor.h"
 #include "../LagrangeElements/LagrangeElements.h"
 
 namespace Solver
 {
-    using SparseMatrix = Eigen::SparseMatrix<double, Eigen::RowMajor>;
+    using SparseMatrix = Eigen::SparseMatrix<double, Eigen::ColMajor>;
     using Vector = Eigen::VectorXd;
-    using MatrixSolver = Eigen::SparseLU<SparseMatrix>;
+    using MatrixSolver = Eigen::SparseLU<SparseMatrix, Eigen::COLAMDOrdering<int>>;
 
     /**
      * @brief Class that describes Ax=b problem
@@ -100,14 +102,76 @@ namespace Solver
                 }
             }
 
+            // apply boundary conditions
+            // Ux = 0 at x = 0
+            // Uy = 0 at y = 0
+            for (size_t node = 0; node < gridDesc.PointsCount(); ++node)
+            {
+                const auto &p = gridDesc.points[node];
+                if (p.x() == 0)
+                {
+                    // Ux = 0 at x = 0
+                    for (size_t coef = coefficients.size(); coef > 0; --coef)
+                    {
+                        if (coefficients[coef - 1].row() == node * dof)
+                            coefficients.erase(coefficients.begin() + coef - 1);
+                    }
+                    coefficients.emplace_back(node * dof, node * dof, 1);
+                }
+                if (p.y() == 0)
+                {
+                    // Uy = 0 at y = 0
+                    for (size_t coef = coefficients.size(); coef > 0; --coef)
+                    {
+                        if (coefficients[coef - 1].row() == node * dof + 1)
+                            coefficients.erase(coefficients.begin() + coef - 1);
+                    }
+                    coefficients.emplace_back(node * dof + 1, node * dof + 1, 1);
+                }
+            }
+
             A = SparseMatrix(problem_size, problem_size);
             A.setFromTriplets(coefficients.begin(), coefficients.end());
+            A.makeCompressed();
         }
         void set_b() noexcept
         {
             b = Vector(problem_size);
             for (auto &it : b)
                 it = 0.0;
+
+            double w = 1.0;
+            double f = 1.0;
+            for (size_t eId = 0; eId < gridDesc.ElementsCount(); ++eId)
+            {
+                const auto &p1Id = gridDesc.elementsDesc[eId](0);
+                const auto &p2Id = gridDesc.elementsDesc[eId](1);
+                const auto &p3Id = gridDesc.elementsDesc[eId](2);
+
+                const auto &p1 = gridDesc.points[p1Id];
+                const auto &p2 = gridDesc.points[p2Id];
+                const auto &p3 = gridDesc.points[p3Id];
+
+                double edge;
+                if (p1.x() == w && p2.x() == w)
+                {
+                    edge = std::abs(p1.y() - p2.y());
+                    b(p1Id * dof) += 0.5 * edge * f;
+                    b(p2Id * dof) += 0.5 * edge * f;
+                }
+                if (p1.x() == w && p3.x() == w)
+                {
+                    edge = std::abs(p1.y() - p3.y());
+                    b(p1Id * dof) += 0.5 * edge * f;
+                    b(p3Id * dof) += 0.5 * edge * f;
+                }
+                if (p3.x() == w && p2.x() == w)
+                {
+                    edge = std::abs(p3.y() - p2.y());
+                    b(p3Id * dof) += 0.5 * edge * f;
+                    b(p2Id * dof) += 0.5 * edge * f;
+                }
+            }
         }
     };
 
@@ -116,7 +180,7 @@ namespace Solver
      * with specified matrix A and rhs b
      *
      */
-    template <unsigned char dof>
+
     class Solver
     {
     protected:
@@ -124,23 +188,28 @@ namespace Solver
         MatrixSolver solver;
 
     public:
-        Solver(const ModelDescriptor::GridDesc &gridDesc) noexcept;
-
-        // bool solve(const ProblemDesc<dof> &desc)
-        // {
-        //     solver.compute(desc.Matrix());
-        //     if (solver.info() != Eigen::Success)
-        //     {
-        //         // decomposition failed
-        //         return false;
-        //     }
-        //     solver.solve(desc.RHS());
-        //     if (solver.info() != Eigen::Success)
-        //     {
-        //         // solving failed
-        //         return false;
-        //     }
-        // }
+        //    Solver() noexcept;
+        template <unsigned char lnc, unsigned char dof>
+        bool solve(const ProblemDesc<lnc, dof> &desc)
+        {
+            auto const& A = desc.Matrix();
+        //    solver.analyzePattern(desc.Matrix());
+        //    solver.factorize(A); 
+            solver.compute(desc.Matrix());
+            if (solver.info() != Eigen::Success)
+            {
+                // decomposition failed
+                throw std::runtime_error(solver.lastErrorMessage());
+                return false;
+            }
+            x = solver.solve(desc.RHS());
+            if (solver.info() != Eigen::Success)
+            {
+                // solving failed
+                return false;
+            }
+            return true;
+        }
         const Vector &Solution() const { return x; }
     };
 

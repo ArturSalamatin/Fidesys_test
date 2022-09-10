@@ -30,7 +30,9 @@ namespace ModelGenerator
     ModelDescriptor::GridDesc
     GridGenerator()
     {
-        ModelDescriptor::Point p1{0.0, 0.0}, p2{1.0, 0.0}, p3{0.0, 1.0}; /**< simplex in 2D space*/
+        double w = 1;
+        double h = 1;
+        ModelDescriptor::Point p1{0.0, 0.0}, p2{w, 0.0}, p3{0.0, h}; /**< simplex in 2D space*/
         ModelDescriptor::PointWithIdContainer pContainer{{0, p1}, {1, p2}, {2, p3}};
         ModelDescriptor::ElementsDescWithIdContainer eContainer{{0, {0, 1, 2}}};
         return {pContainer, eContainer};

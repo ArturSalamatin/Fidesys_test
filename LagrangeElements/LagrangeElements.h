@@ -47,6 +47,14 @@ namespace TLLE // TriangleLinearLagrangeElement
 
         std::array<std::array<StiffnessMatrix, LNC>, LNC> K;
 
+        double EdgeLength(unsigned char p1, unsigned char p2)
+        {
+            const auto P1 = Coords(p1);
+            const auto P2 = Coords(p2);
+
+            return std::sqrt((P1.x()-P2.x())*(P1.x()-P2.x())+(P1.y()-P2.y())*(P1.y()-P2.y()));
+        }
+
     protected:
         ModelDescriptor::Element Coords;
         TriangleLinearShapeMatrix N;
