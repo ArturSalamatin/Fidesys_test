@@ -33,29 +33,6 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    // const auto &s = solver.Solution();
-    // if (s(0) < 1E-16 &&
-    //     s(1) < 1E-16 &&
-    //     s(2) == 1.0 &&
-    //     s(3) < 1E-16 &&
-    //     s(4) < 1E-16 &&
-    //     s(5) < 1E-16 &&
-    //     s(6) == 1.0 &&
-    //     s(7) < 1E-16)
-    // {
-
-    //     std::cout << "Pass \n";
-    //     std::cout << solver.Solution() << std::endl;
-    //     return 0;
-    // }
-    // else
-    // {
-
-    //     std::cout << "Fail \n";
-    //     std::cout << solver.Solution() << std::endl;
-    //     return -1;
-    // }
-
     std::cout << "Pass \n";
     std::cout << solver.Solution() << std::endl;
     return 0;

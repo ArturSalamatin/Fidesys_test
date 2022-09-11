@@ -1,35 +1,32 @@
 #include <iostream>
 #include <string>
 
+#include "../test_methods.h"
 #include "../../ModelGenerator/ModelGenerator.h"
 #include "../../Solver/Solver.h"
-
-double tol = 1E-14;
-
-Eigen::Vector2d getDisplacement(size_t id, const Solver::Vector &sol)
-{
-    return Eigen::Vector2d{sol(2 * id), sol(2 * id + 1)};
-}
-
-bool comp(double val, double control = 0.0)
-{
-    return std::abs(val - control) < tol;
-}
 
 /**
  * @brief Test the Solver with 2 elements filling a square
  */
 int main(int argc, char **argv)
 {
-    ModelDescriptor::GridDesc gridDesc{ModelGenerator::GridGenerator2()};
+    using namespace TestSpace;
 
-    ModelDescriptor::MaterialPropDesc props{1.0, 0.0}; // very simple properties
+    double f = 1E6;
+    double E = 1E11;
+    double mu = 0.0;
+    double w = 1.0;
+    double h = 20.0;
+
+    ModelDescriptor::GridDesc gridDesc{ModelGenerator::GridGenerator2(w, h)};
+
+    ModelDescriptor::MaterialPropDesc props{E, mu}; // very simple properties
     TLLE::LagrangeElement::MaterialMatrix c{props};
 
     Solver::ProblemDesc<TLLE::LNC, TLLE::DOF> problem{gridDesc, props};
 
     problem.set_A();
-    problem.set_b();
+    problem.set_b(w, f);
     Solver::Solver solver;
     try
     {
@@ -66,27 +63,37 @@ int main(int argc, char **argv)
         auto v3 = getDisplacement(p3Id, s);
         stress = el.getStress(v1, v2, v3, c);
 
-        std::cout << stress << std::endl
-                  << std::endl;
-
-        if (std::abs(stress(0) - 1.0) > tol || std::abs(stress(1)) > tol || std::abs(stress(2)) > tol)
+        if (!comp(stress(0), f) || !comp(stress(1)) || !comp(stress(2)))
         {
-            std::cerr << "Fail \nWith stress components:\n";
-            std::cerr << stress << std::endl;
+            std::cerr << "Fail\n";
+            std::cerr << "ElementId: " << eId << "; Stress:\n"
+                      << stress << std::endl
+                      << std::endl;
+        }
+        
+        TLLE::Strain strain;
+        strain = el.getStrain(v1, v2, v3);
+        if (!comp(strain(0), f/E) || !comp(strain(1), -mu*f/E) || !comp(strain(2)))
+        {
+            std::cerr << "Fail\n";
+            std::cerr << "ElementId: " << eId << "; Strain:\n"
+                      << strain << std::endl
+                      << std::endl;
         }
     }
 
     if (comp(s(0)) &&
         comp(s(1)) &&
-        comp(s(2), 1.0) &&
+        comp(s(2), f / E * w) &&
         comp(s(3)) &&
         comp(s(4)) &&
-        comp(s(5)) &&
-        comp(s(6), 1.0) &&
-        comp(s(7)))
+        comp(s(5), -mu * h * f / E) &&
+        comp(s(6), f / E * w) &&
+        comp(s(7), -mu * h * f / E))
     {
-        std::cout << "Pass \n";
-        std::cout << solver.Solution() << std::endl;
+        std::cout << "Pass \n"
+                  << std::endl;
+        //       std::cout << solver.Solution() << std::endl;
         return 0;
     }
     else

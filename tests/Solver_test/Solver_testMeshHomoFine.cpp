@@ -5,11 +5,14 @@
 #include "../../ModelGenerator/ModelGenerator.h"
 #include "../../Solver/Solver.h"
 
-double tol = 1E-9;
+double tol = 1E-11;
 
 bool comp(double val, double control = 0.0)
 {
-    return std::abs(val - control) < tol;
+    if (control == 0.0)
+        return std::abs(val) < tol;
+    else
+        return std::abs(control - val ) < tol;
 }
 
 Eigen::Vector2d getDisplacement(size_t id, const Solver::Vector &sol)
@@ -29,13 +32,7 @@ int main(int argc, char **argv)
     double E = 2E11;
     double mu = 0.3;
 
-    auto gridDesc{ModelGenerator::GridGenerator2(w, h)}; // get mesh from file
-    // {
-    //     using namespace ModelDescriptor;
-
-    //     std::cout << gridDesc.points << std::endl;
-    // }
-    //   ModelDescriptor::MaterialPropDesc props{ModelGenerator::MaterialPropDescDefault()}; // some prescribed properties
+    auto gridDesc{ModelGenerator::MeshDescriptorFromFile("data\\task_mesh_homo.k")}; // get mesh from file
     ModelDescriptor::MaterialPropDesc props{E, mu}; // some prescribed properties
 
     TLLE::LagrangeElement::MaterialMatrix c{props};
@@ -48,7 +45,7 @@ int main(int argc, char **argv)
 
     try
     {
-        bool f = solver.solve<TLLE::LNC, TLLE::DOF>(problem);
+        solver.solve<TLLE::LNC, TLLE::DOF>(problem);
     }
     catch (const std::exception &e)
     {
@@ -62,12 +59,21 @@ int main(int argc, char **argv)
 
     const auto &s = solver.Solution();
 
-    std::cout << "Solution:\n"
-              << s << std::endl;
-    std::cout << "RHS:\n"
-              << problem.RHS() << std::endl;
-    std::cout << "Matrix:\n"
-              << problem.Matrix() << std::endl;
+    // loop through all nodes
+    for (size_t pId = 0; pId < gridDesc.PointsCount(); ++pId)
+    {
+        const auto &p = gridDesc.points[pId];
+        double x = p.x(), y = p.y();
+        double u = x * f / E;
+        double v = -mu * y * f / E;
+        auto v1 = getDisplacement(pId, s);
+
+        if (!comp(v1(0), u) ||
+            !comp(v1(1), v))
+        {
+            std::cerr << "Fail: wrong displacement\n" << v1(0) << "  " << u << '\n' << v1(1) << "  " << v << std::endl;
+        }
+    }
 
     // loop through all elements
     for (size_t eId = 0; eId < gridDesc.ElementsCount(); ++eId)
@@ -88,14 +94,13 @@ int main(int argc, char **argv)
         auto v3 = getDisplacement(p3Id, s);
         stress = el.getStress(v1, v2, v3, c);
         std::cout << "Element " << eId << ", stress:\n"
-                  << stress << std::endl
-                  << std::endl;
+                  << stress << std::endl;
 
         // std:: cout << std::abs(stress(0) - f) << ' ' << std::abs(stress(1)) << ' ' << std::abs(stress(2)) << std::endl;
 
-        if (std::abs(stress(0) - f) > tol ||
-            std::abs(stress(1)) > tol ||
-            std::abs(stress(2)) > tol)
+        if (!comp(stress(0), f) ||
+            !comp(stress(1)) ||
+            !comp(stress(2)))
         {
             std::cerr << "Fail " << std::endl;
         }
@@ -106,9 +111,9 @@ int main(int argc, char **argv)
                   << strain << std::endl
                   << std::endl;
 
-        if (std::abs(strain(0) - f / (E)) > tol ||
-            std::abs(strain(1) + mu * f / (E)) > tol ||
-            std::abs(strain(2)) > tol)
+        if (!comp(strain(0), f / E) ||
+            !comp(strain(1), mu * f / E) ||
+            !comp(strain(2)))
         {
             std::cerr << "Fail " << std::endl;
         }

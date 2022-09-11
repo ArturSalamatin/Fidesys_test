@@ -18,7 +18,7 @@ FAIL_REGULAR_EXPRESSION "Fail")
 project(SolverTest2)
 
 add_executable(SolverTest2 Solver_test2.cpp)
-target_link_libraries(SolverTest2 modelGenerator)
+target_link_libraries(SolverTest2 modelGenerator TestMethods)
 
 target_compile_features(SolverTest2 PRIVATE cxx_std_17)
 
@@ -65,5 +65,21 @@ target_compile_features(SolverTestMeshHomo2 PRIVATE cxx_std_17)
 add_test(NAME SolverTestMeshHomo2_t COMMAND SolverTestMeshHomo2 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 set_tests_properties(SolverTestMeshHomo2_t PROPERTIES
+PASS_REGULAR_EXPRESSION "Pass"
+FAIL_REGULAR_EXPRESSION "Fail")
+
+
+
+
+project(SolverTestMeshHomoFine)
+
+add_executable(SolverTestMeshHomoFine Solver_testMeshHomoFine.cpp)
+target_link_libraries(SolverTestMeshHomoFine modelGenerator StreamOutput)
+
+target_compile_features(SolverTestMeshHomoFine PRIVATE cxx_std_17)
+
+add_test(NAME SolverTestMeshHomoFine_t COMMAND SolverTestMeshHomo2 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+set_tests_properties(SolverTestMeshHomoFine_t PROPERTIES
 PASS_REGULAR_EXPRESSION "Pass"
 FAIL_REGULAR_EXPRESSION "Fail")

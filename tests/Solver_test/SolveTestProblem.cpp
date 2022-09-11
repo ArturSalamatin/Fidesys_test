@@ -9,6 +9,9 @@
  */
 int main(int argc, char **argv)
 {
+    double w = 0.15;
+    double f = 1E6;
+
     auto gridDesc{ModelGenerator::MeshDescriptorFromFile("data\\task_mesh_fine.k")};    // get mesh from file
     ModelDescriptor::MaterialPropDesc props{ModelGenerator::MaterialPropDescDefault()}; // some prescribed properties
     TLLE::LagrangeElement::MaterialMatrix c{props};
@@ -16,7 +19,7 @@ int main(int argc, char **argv)
     Solver::ProblemDesc<TLLE::LNC, TLLE::DOF> problem{gridDesc, props};
 
     problem.set_A();
-    problem.set_b(0.15, 1E6); // send thickness and force to compute the rhs
+    problem.set_b(w, f); // send thickness and force to compute the rhs
     Solver::Solver solver;
 
     try
@@ -37,7 +40,6 @@ int main(int argc, char **argv)
 
     outputter.print("data\\solution.csv");
 
-    std::cout << "Pass \n";
-    std::cout << solver.Solution() << std::endl;
+    std::cout << "Pass \n" << std::endl;
     return 0;
 }
