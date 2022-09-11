@@ -9,7 +9,7 @@
  */
 int main(int argc, char **argv)
 {
-    auto gridDesc{ModelGenerator::MeshDescriptorFromFile("data\\task_mesh_coarse.k")};  // get mesh from file
+    auto gridDesc{ModelGenerator::MeshDescriptorFromFile("data\\task_mesh_fine.k")};    // get mesh from file
     ModelDescriptor::MaterialPropDesc props{ModelGenerator::MaterialPropDescDefault()}; // some prescribed properties
     TLLE::LagrangeElement::MaterialMatrix c{props};
 
@@ -33,28 +33,9 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    // const auto &s = solver.Solution();
-    // if (s(0) < 1E-16 &&
-    //     s(1) < 1E-16 &&
-    //     s(2) == 1.0 &&
-    //     s(3) < 1E-16 &&
-    //     s(4) < 1E-16 &&
-    //     s(5) < 1E-16 &&
-    //     s(6) == 1.0 &&
-    //     s(7) < 1E-16)
-    // {
+    Solver::SolutionOutput<3, 2> outputter{problem, solver.Solution(), c};
 
-    //     std::cout << "Pass \n";
-    //     std::cout << solver.Solution() << std::endl;
-    //     return 0;
-    // }
-    // else
-    // {
-
-    //     std::cout << "Fail \n";
-    //     std::cout << solver.Solution() << std::endl;
-    //     return -1;
-    // }
+    outputter.print("data\\solution.csv");
 
     std::cout << "Pass \n";
     std::cout << solver.Solution() << std::endl;

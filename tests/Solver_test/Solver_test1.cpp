@@ -45,6 +45,7 @@ int main(int argc, char **argv)
         }
     }
 
-    std::cout << "Pass " << std::endl;
+    std::cout << "Pass " << std::endl
+              << solver.Solution() << std::endl;
     return 0;
 }

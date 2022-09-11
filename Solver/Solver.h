@@ -1,15 +1,15 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
+#include <string>
 #include <iostream>
+#include <fstream>
 #include <unordered_map>
 // #include <omp.h>
 #include "../eigen/Eigen/SparseCore"
 #include "../eigen/Eigen/OrderingMethods"
 #include "../eigen/Eigen/SparseLU"
-// #include "../eigen/Eigen/SparseQR"
 
-//#include "../ModelGenerator/ModelDescriptor.h"
 #include "../LagrangeElements/LagrangeElements.h"
 
 namespace Solver
@@ -57,7 +57,7 @@ namespace Solver
             return b;
         }
 
-        size_t size() { return problem_size; }
+        size_t size() const noexcept { return problem_size; }
 
     public:
         ModelDescriptor::GridDesc gridDesc;
@@ -209,6 +209,78 @@ namespace Solver
             return true;
         }
         const Vector &Solution() const { return x; }
+    };
+
+    template <unsigned char lnc, unsigned char dof>
+    class SolutionOutput
+    {
+    public:
+        std::vector<std::pair<double, double>> result;
+        Vector sol;
+        SolutionOutput(const ProblemDesc<lnc, dof> &pDesc, const Vector &sol, const TLLE::LagrangeElement::MaterialMatrix &c) noexcept
+            : sol{sol}
+        {
+            const auto &lagrElem = pDesc.lagrElems;
+            const auto &gridDesc = pDesc.gridDesc;
+
+            // loop through all elements
+            for (size_t eId = 0; eId < gridDesc.ElementsCount(); ++eId)
+            {
+                const auto &p1Id = gridDesc.elementsDesc[eId](0);
+                const auto &p2Id = gridDesc.elementsDesc[eId](1);
+                const auto &p3Id = gridDesc.elementsDesc[eId](2);
+
+                const auto &p1 = gridDesc.points[p1Id];
+                const auto &p2 = gridDesc.points[p2Id];
+                const auto &p3 = gridDesc.points[p3Id];
+
+                const auto &el = lagrElem[eId];
+
+                double coord = 0.0;
+                double w = 0.0;
+                if (p1.x() == w && p2.x() == w)
+                {
+                    coord = (p1.y() + p2.y());
+                }
+                else if (p1.x() == w && p3.x() == w)
+                {
+                    coord = (p1.y() + p3.y());
+                }
+                else if (p3.x() == w && p2.x() == w)
+                {
+                    coord = (p3.y() + p2.y());
+                }
+                if (coord > 0.0)
+                {
+                    coord *= 0.5;
+                    TLLE::Stress s;
+                    // auto v1 = getDisplacement(p1Id);
+                    // auto v2 = getDisplacement(p2Id);
+                    // auto v3 = getDisplacement(p3Id);
+                 //   el
+                    s = el.getStress(getDisplacement(p1Id), getDisplacement(p2Id), getDisplacement(p3Id), c);
+                    result.emplace_back(coord, s(0));
+                }
+            }
+
+            std::sort(result.begin(), result.end());
+        }
+
+        Eigen::Vector2d getDisplacement(size_t id)
+        {
+            return Eigen::Vector2d{sol(2 * id), sol(2 * id + 1)};
+        }
+
+        void print(const std::string& fname)
+        {
+            std::ofstream f{fname};
+            for(auto& [c, v] : result)
+            {
+                f << c << ';' << v << '\n';
+            }
+            f.close();
+
+        }
     };
 
 } // Solver
