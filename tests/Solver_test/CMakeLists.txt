@@ -58,7 +58,7 @@ target_compile_features(SolveTestProblem PRIVATE cxx_std_17)
 project(SolverTestMeshHomo2)
 
 add_executable(SolverTestMeshHomo2 Solver_testMeshHomo2.cpp)
-target_link_libraries(SolverTestMeshHomo2 modelGenerator)
+target_link_libraries(SolverTestMeshHomo2 modelGenerator StreamOutput)
 
 target_compile_features(SolverTestMeshHomo2 PRIVATE cxx_std_17)
 

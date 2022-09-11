@@ -56,7 +56,7 @@ namespace CustomLagrangeElement
         double ShapeFuncValue(double x, double y) const noexcept
         {
             static_assert(local_node_idx < lnc, "CustomLagrangeElement::ShapeMatrix::ShapeFuncValue wrong template parameter");
-            return {shapeFuncCoefs[local_node_idx][0] * 1 +
+            return {shapeFuncCoefs[local_node_idx][0] * 1.0 +
                     shapeFuncCoefs[local_node_idx][1] * x +
                     shapeFuncCoefs[local_node_idx][2] * y};
         }

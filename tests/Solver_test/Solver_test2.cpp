@@ -4,9 +4,16 @@
 #include "../../ModelGenerator/ModelGenerator.h"
 #include "../../Solver/Solver.h"
 
+double tol = 1E-14;
+
 Eigen::Vector2d getDisplacement(size_t id, const Solver::Vector &sol)
 {
     return Eigen::Vector2d{sol(2 * id), sol(2 * id + 1)};
+}
+
+bool comp(double val, double control = 0.0)
+{
+    return std::abs(val - control) < tol;
 }
 
 /**
@@ -58,24 +65,25 @@ int main(int argc, char **argv)
         auto v2 = getDisplacement(p2Id, s);
         auto v3 = getDisplacement(p3Id, s);
         stress = el.getStress(v1, v2, v3, c);
+
         std::cout << stress << std::endl
                   << std::endl;
 
-        if (s(0) != 1.0 || std::abs(s(1)) > 1E-16 || std::abs(s(2)) > 1E-16)
+        if (std::abs(stress(0) - 1.0) > tol || std::abs(stress(1)) > tol || std::abs(stress(2)) > tol)
         {
             std::cerr << "Fail \nWith stress components:\n";
             std::cerr << stress << std::endl;
         }
     }
 
-    if (s(0) < 1E-16 &&
-        s(1) < 1E-16 &&
-        s(2) == 1.0 &&
-        s(3) < 1E-16 &&
-        s(4) < 1E-16 &&
-        s(5) < 1E-16 &&
-        s(6) == 1.0 &&
-        s(7) < 1E-16)
+    if (comp(s(0)) &&
+        comp(s(1)) &&
+        comp(s(2), 1.0) &&
+        comp(s(3)) &&
+        comp(s(4)) &&
+        comp(s(5)) &&
+        comp(s(6), 1.0) &&
+        comp(s(7)))
     {
         std::cout << "Pass \n";
         std::cout << solver.Solution() << std::endl;

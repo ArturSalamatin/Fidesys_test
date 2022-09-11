@@ -27,3 +27,18 @@ add_test(NAME LagrangeElementTest2_t COMMAND LagrangeElementTest1)
 set_tests_properties(LagrangeElementTest2_t PROPERTIES
 PASS_REGULAR_EXPRESSION "Pass"
 FAIL_REGULAR_EXPRESSION "Fail")
+
+
+
+project(LagrangeElementTest3)
+
+add_executable(LagrangeElementTest3 LagrangeElement_test3.cpp)
+target_link_libraries(LagrangeElementTest3 modelGenerator)
+
+target_compile_features(LagrangeElementTest3 PRIVATE cxx_std_17)
+
+add_test(NAME LagrangeElementTest3_t COMMAND LagrangeElementTest1)
+
+set_tests_properties(LagrangeElementTest3_t PROPERTIES
+PASS_REGULAR_EXPRESSION "Pass"
+FAIL_REGULAR_EXPRESSION "Fail")

@@ -67,14 +67,13 @@ namespace TLLE // TriangleLinearLagrangeElement
         // {
         //     const auto P1 = Coords(p1);
         //     const auto P2 = Coords(p2);
-
         //     return std::sqrt((P1.x()-P2.x())*(P1.x()-P2.x())+(P1.y()-P2.y())*(P1.y()-P2.y()));
         // }
 
+        double Area() const { return N.Area; };
     protected:
         ModelDescriptor::Element Coords;
         TriangleLinearShapeMatrix N;
-        double Area() const { return N.Area; };
     };
 
 } // TLLE

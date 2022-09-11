@@ -37,10 +37,10 @@ namespace ModelGenerator
     SimplexGenerator();
 
     ModelDescriptor::GridDesc
-    GridGenerator();
+    GridGenerator(double w = 1.0, double h = 1.0);
 
     ModelDescriptor::GridDesc
-    GridGenerator2();
+    GridGenerator2(double w = 1.0, double h = 1.0);
 
     namespace FileParser
     {
